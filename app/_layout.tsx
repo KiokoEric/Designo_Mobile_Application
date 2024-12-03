@@ -1,39 +1,52 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import * as Font from 'expo-font';
+import Hero from '@/components/Hero/Hero';
+import Home from '@/components/Home/Home';
+import About from '@/components/About/About';
+import Footer from '@/components/Footer/Footer';
+import Header from '@/components/Header/Header';
+import Contact from '@/components/Contact/Contact';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+const _layout = () => {
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [fontsLoaded, setFontsLoaded] = useState(true);
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      "JostBold": require('../assets/fonts/Jost-Bold.ttf'),
+      "JostRegular": require('../assets/fonts/Jost-Regular.ttf'),
+    });
+    setFontsLoaded(true);
+  };
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    loadFonts();
+  }, []);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView>  
+        <ScrollView>
+          <Header />
+          <Hero />
+          <Home />
+          <About />
+          <Contact />
+          <Footer />
+        </ScrollView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
+  )
 }
+
+export default _layout
+
+const styles = StyleSheet.create({
+})
